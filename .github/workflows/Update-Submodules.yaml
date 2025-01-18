@@ -8,43 +8,24 @@ on:
 jobs:
   update-submodules:
     runs-on: ubuntu-latest
-    env:
-      LANG: ko_KR.UTF-8
-      LC_ALL: ko_KR.UTF-8
-      LANGUAGE: ko_KR.UTF-8
 
     steps:
-      - name: Setup Korean locale & fonts
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y locales fonts-nanum*
-          sudo locale-gen ko_KR.UTF-8
-          sudo update-locale LANG=ko_KR.UTF-8 LC_ALL=ko_KR.UTF-8
-          
-          git config --global core.precomposeUnicode true
-          git config --global core.quotepath false
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+      - name: Checkout repository (without submodules)
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          submodules: false  # 서브모듈 코드 체크아웃 비활성화
 
-      - name: Clone main repository (without actions/checkout)
+      - name: Update submodule references
         run: |
-          # 1) 저장소 직접 클론
-          git clone --depth=1 https://github.com/DeokJong/ssafy13-team2.git .
-          # 2) 서브모듈 동기화 및 초기화
-          git submodule sync --recursive
-          git submodule update --init --recursive
-
-      - name: Check for changes
-        run: |
-          # 변경 사항 확인
-          if [ -z "$(git status --porcelain)" ]; then
+          git submodule update --remote --merge
+          if [ -n "$(git status --porcelain)" ]; then
+            git config --global user.name "github-actions[bot]"
+            git config --global user.email "github-actions[bot]@users.noreply.github.com"
+            git add .
+            CURRENT_DATE=$(date "+%Y년 %m월 %d일 %H시 %M분")
+            git commit -m "Update submodule references: $CURRENT_DATE"
+            git push
+          else
             echo "No changes in submodules. Exiting."
-            exit 0
           fi
-
-      - name: Commit and push changes
-        run: |
-          CURRENT_DATE=$(date "+%Y년 %m월 %d일 %H시 %M분")
-          git add .
-          git commit -m "서브모듈 업데이트: $CURRENT_DATE"
-          git push
