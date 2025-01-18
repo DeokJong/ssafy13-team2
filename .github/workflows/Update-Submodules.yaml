@@ -8,6 +8,10 @@ on:
 jobs:
   update-submodules:
     runs-on: ubuntu-latest
+    steps:  
+      - name: Setfont
+        run: |
+          sudo apt-get install fonts-nanum*
     steps:
       # UTF-8 로케일 및 Git 경로 설정
       - name: Set UTF-8 locale and fix encoding
