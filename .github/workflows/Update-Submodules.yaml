@@ -2,22 +2,23 @@ name: Update Submodules
 
 on:
   schedule:
-    - cron: '0 0,6,12,18 * * *' # 6시간 간격 실행
+    - cron: '0 0,6,12,18 * * *'
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   update-submodules:
     runs-on: ubuntu-latest
 
     steps:
-      # 메인 레포지토리 체크아웃 (서브모듈은 제외)
       - name: Checkout repository (without submodules)
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
           submodules: false  # 서브모듈 코드 체크아웃 비활성화
 
-      # 서브모듈 갱신 및 상태 확인
       - name: Update submodule references
         run: |
           # 서브모듈 초기화 및 동기화
