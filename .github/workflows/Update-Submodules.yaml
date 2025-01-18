@@ -2,54 +2,6 @@ name: Update Submodules
 
 on:
   schedule:
-    - cron: '0 0,6,12,18 * * *' # 6시간 간격 실행
-  workflow_dispatch:
-
-jobs:
-  update-submodules:
-    runs-on: ubuntu-latest
-    # Job 전체에 적용할 환경 변수(한글 로케일)
-    env:
-      LANG: ko_KR.UTF-8
-      LC_ALL: ko_KR.UTF-8
-      LANGUAGE: ko_KR.UTF-8
-
-    steps:
-      - name: Setup Korean locale & fonts
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y locales fonts-nanum*
-          sudo locale-gen ko_KR.UTF-8
-          sudo update-locale LANG=ko_KR.UTF-8 LC_ALL=ko_KR.UTF-8
-          
-          # Git 한글 경로 설정
-          git config --global core.precomposeUnicode true
-          git config --global core.quotepath false
-
-          # 확인용
-          echo "Current locale:"
-          locale
-
-      # (선택) 디렉토리 디버깅
-      - name: Debug directory structure
-        run: |
-          echo "==== HOME ===="
-          ls -al ~
-          echo "==== WORKING DIRECTORY ===="
-          ls -al ${{ github.workspace }}
-
-      # 중앙 레포지토리와 서브모듈 체크아웃
-      - name: Checkout central repository
-        uses: actions/checkout@v3
-        with:
-          submodules: true  # 서브모듈 포함
-          fetch-depth: 0
-
-      # 서브모듈 동기화 및 업데이트
-      - name: Sync and update submodulesname: Update Submodules
-
-on:
-  schedule:
     - cron: '0 0,6,12,18 * * *'
   workflow_dispatch:
 
@@ -92,27 +44,6 @@ jobs:
 
       - name: Commit and push changes
         run: |
-          CURRENT_DATE=$(date "+%Y년 %m월 %d일 %H시 %M분")
-          git add .
-          git commit -m "서브모듈 업데이트: $CURRENT_DATE"
-          git push
-
-        run: |
-          git submodule sync --recursive
-          git submodule update --init --recursive
-
-          # 변경사항 확인 후 없으면 스킵
-          if [ -z "$(git status --porcelain)" ]; then
-            echo "No changes in submodules. Exiting."
-            exit 0
-          fi
-
-      # 변경 사항 커밋 및 푸시
-      - name: Commit and push changes
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          
           CURRENT_DATE=$(date "+%Y년 %m월 %d일 %H시 %M분")
           git add .
           git commit -m "서브모듈 업데이트: $CURRENT_DATE"
