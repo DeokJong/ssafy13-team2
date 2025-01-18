@@ -23,13 +23,14 @@ jobs:
       - name: Checkout central repository
         uses: actions/checkout@v3
         with:
-          submodules: true  # 서브모듈 포함
+          submodules: recursive  # 모든 서브모듈 포함
           fetch-depth: 0
 
-      # 서브모듈 업데이트
-      - name: Update submodules
+      # 서브모듈 동기화 및 업데이트
+      - name: Sync and update submodules
         run: |
-          git submodule update --remote --merge
+          git submodule sync --recursive
+          git submodule update --init --recursive
           if [ -z "$(git status --porcelain)" ]; then
             echo "No changes in submodules. Exiting."
             exit 0
