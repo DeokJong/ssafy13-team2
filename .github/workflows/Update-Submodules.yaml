@@ -1,0 +1,36 @@
+name: Update Submodules
+
+on:
+  schedule:
+    - cron: '0 0,6,12,18 * * *' # 6시간 간격 실행
+  workflow_dispatch:
+
+jobs:
+  update-submodules:
+    runs-on: ubuntu-latest
+    steps:
+      # 중앙 레포지토리와 서브모듈 체크아웃
+      - name: Checkout central repository
+        uses: actions/checkout@v3
+        with:
+          submodules: true  # 서브모듈 포함
+          fetch-depth: 0
+
+      # 서브모듈 업데이트
+      - name: Update submodules
+        run: |
+          git submodule update --remote --merge
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "No changes in submodules. Exiting."
+            exit 0
+          fi
+
+      # 변경 사항 커밋 및 푸시
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          CURRENT_DATE=$(date "+%Y년 %m월 %d일 %H시 %M분")
+          git add .
+          git commit -m "서브모듈 업데이트: $CURRENT_DATE"
+          git push
