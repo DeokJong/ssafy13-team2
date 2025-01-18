@@ -9,7 +9,7 @@ jobs:
   update-submodules:
     runs-on: ubuntu-latest
     steps:
-      # 로케일 및 UTF-8 환경 설정
+      # UTF-8 로케일 및 Git 경로 설정
       - name: Set UTF-8 locale and fix encoding
         run: |
           sudo locale-gen ko_KR.UTF-8
@@ -19,11 +19,16 @@ jobs:
           git config --global core.precomposeUnicode true
           git config --global core.quotepath false
 
+      # 디렉토리 디버깅 (선택적)
+      - name: Debug directory structure
+        run: |
+          ls -al /home/runner/work/ssafy13-team2/ssafy13-team2/
+
       # 중앙 레포지토리와 서브모듈 체크아웃
       - name: Checkout central repository
         uses: actions/checkout@v3
         with:
-          submodules: recursive  # 모든 서브모듈 포함
+          submodules: true  # 서브모듈 포함
           fetch-depth: 0
 
       # 서브모듈 동기화 및 업데이트
