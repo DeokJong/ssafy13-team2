@@ -9,13 +9,15 @@ jobs:
   update-submodules:
     runs-on: ubuntu-latest
     steps:
-      # 로케일 설정
-      - name: Set UTF-8 locale
+      # 로케일 및 UTF-8 환경 설정
+      - name: Set UTF-8 locale and fix encoding
         run: |
           sudo locale-gen ko_KR.UTF-8
           export LANG=ko_KR.UTF-8
           export LANGUAGE=ko_KR.UTF-8
           export LC_ALL=ko_KR.UTF-8
+          git config --global core.precomposeUnicode true
+          git config --global core.quotepath false
 
       # 중앙 레포지토리와 서브모듈 체크아웃
       - name: Checkout central repository
