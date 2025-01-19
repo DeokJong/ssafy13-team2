@@ -1,6 +1,0 @@
-[submodule "진덕종"]
-	path = 진덕종
-	url = https://github.com/DeokJong/BreakingAlgorithm.git
-[submodule "테스트"]
-	path = 테스트
-	url = https://github.com/DeokJong/JBNU-SHOPPING.git
