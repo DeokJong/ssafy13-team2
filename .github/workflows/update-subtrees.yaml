@@ -31,8 +31,9 @@ jobs:
       # 3) Subtree 업데이트
       - name: Pull from all subtrees
         run: |
-          git subtree pull --prefix=진덕종 https://github.com/DeokJong/algorithm-study.git main --squash -m "update: 진덕종 subtree"
-          git subtree pull --prefix=윤경일 https://github.com/kidreamx/Algorithm_Coding main --squash -m "update: 윤경일 subtree"
+          git subtree pull --prefix=진덕종 https://github.com/DeokJong/algorithm-study.git main --squash -m "update: 진덕종 알고리즘 문제 풀이"
+          git subtree pull --prefix=윤경일 https://github.com/kidreamx/Algorithm_Coding.git main --squash -m "update: 윤경일 알고리즘 문제 풀이"
+          git subtree pull --prefix=심연수 https://github.com/Yeonsu-Sim/Algorithm.git main --squash -m "update: 심연수 알고리즘 문제 풀이"
 
       # 4) 변경사항(커밋) 푸시
       - name: Push changes
