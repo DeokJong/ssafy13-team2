@@ -19,8 +19,8 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v3
         with:
-          # 서브트리에 푸시하려면 credentials가 필요
           persist-credentials: true
+          fetch-depth: 0
 
       # 2) Git 기본 설정
       - name: Set up Git
