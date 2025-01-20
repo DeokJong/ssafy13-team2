@@ -34,11 +34,7 @@ jobs:
 
       - name: Push changes
         run: |
-          # 변경된 내용 확인 및 커밋 후 푸시
-          if git status --porcelain | grep .; then
-            git add .
-            git commit -m "chore: subtree updates"
-            git push origin main
-          else
-            echo "No changes to commit"
-          fi
+          git reset --hard
+          git clean -fd
+          git add -A
+          git diff --staged --exit-code || git commit -m "chore: subtree updates" && git push origin main
