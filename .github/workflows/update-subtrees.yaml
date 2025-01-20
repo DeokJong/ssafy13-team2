@@ -2,7 +2,6 @@ name: Update Subtrees
 
 on:
   schedule:
-    # 3시간 간격 (UTC 기준: 0, 3, 6, 9, 12, 15, 18, 21시)
     - cron: "0 */3 * * *"
   workflow_dispatch:
 
@@ -14,20 +13,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1) 메인 레포 체크아웃
       - name: Check out the repo
         uses: actions/checkout@v3
         with:
           persist-credentials: true
           fetch-depth: 0
+          ref: main
 
-      # 2) Git 기본 설정
       - name: Set up Git
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
 
-      # 3) Subtree 업데이트
       - name: Pull from all subtrees
         run: |
           git subtree pull --prefix=진덕종 https://github.com/DeokJong/algorithm-study.git main --squash -m "update: 진덕종 알고리즘 문제 풀이" || echo "No changes for 진덕종"
@@ -35,12 +32,13 @@ jobs:
           git subtree pull --prefix=심연수 https://github.com/Yeonsu-Sim/Algorithm.git main --squash -m "update: 심연수 알고리즘 문제 풀이" || echo "No changes for 심연수"
           git subtree pull --prefix=양정현 https://github.com/jhyang00815/algoguru.git main --squash -m "update: 양정현 알고리즘 문제 풀이" || echo "No changes for 양정현"
 
-      # 4) 변경사항(커밋) 푸시
       - name: Push changes
         run: |
-          # 변경된 내용이 있는지 확인
-          if git diff --quiet; then
-            echo "No changes to commit"
-          else
+          # 변경된 내용 확인 및 커밋 후 푸시
+          if git status --porcelain | grep .; then
+            git add .
+            git commit -m "chore: subtree updates"
             git push origin main
+          else
+            echo "No changes to commit"
           fi
